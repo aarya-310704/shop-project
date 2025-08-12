@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - ShopHub</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<main class="main-content">
+    <div class="container">
+        <div style="max-width: 400px; margin: 0 auto;">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h2 class="card-title">Admin Login</h2>
+                    <p class="card-description">Sign in to the admin dashboard</p>
+                </div>
+
+                <form id="adminLoginForm" novalidate>
+                    <div class="form-group">
+                        <label for="adminEmail" class="form-label">Email Address</label>
+                        <input type="email" id="adminEmail" name="adminEmail" class="form-control" placeholder="Enter admin email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="adminPassword" class="form-label">Password</label>
+                        <input type="password" id="adminPassword" name="adminPassword" class="form-control" placeholder="Enter admin password" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg">Sign In</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+document.getElementById("adminLoginForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const email = document.getElementById("adminEmail").value.trim();
+    const password = document.getElementById("adminPassword").value.trim();
+
+    if (email === "admin@shophub.com" && password === "Admin123!") {
+        localStorage.setItem("role", "admin");
+        localStorage.setItem("isLoggedIn", "true");
+        localStorage.setItem("userData", JSON.stringify({
+            firstName: "Admin",
+            lastName: "User",
+            email: email
+        }));
+        alert("Admin login successful!");
+        window.location.href = "admin.html";
+    } else {
+        alert("Invalid admin credentials!");
+    }
+});
+</script>
+
+</body>
+</html>
