@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ShopHub - Your Premium Shopping Destination</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<header class="header">
+    <div class="container">
+        <div class="header-content">
+            <a href="home.html" class="logo">🛍️ ShopHub</a>
+            <nav class="nav">
+                <ul class="nav-links">
+                    <li><a href="home.html" class="active">Home</a></li>
+                    <li><a href="product.html">Products</a></li>
+                    <li><a href="cart.html">Cart <span class="cart-count">0</span></a></li>
+                    <li><a href="profile.html">Profile</a></li>
+                    <li id="adminLink" style="display: none;"><a href="admin.html">Admin</a></li>
+                </ul>
+                <div class="nav-actions" id="nav-actions">
+                    <a href="login.html" class="btn btn-outline btn-sm">Login</a>
+                    <!-- Removed Sign Up button -->
+                </div>
+            </nav>
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
+        </div>
+    </div>
+</header>
+
+<main class="main-content">
+    <div class="container">
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1>Welcome to ShopHub</h1>
+            <p>Discover amazing products at unbeatable prices. Your premium shopping experience starts here.</p>
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <a href="product.html" class="btn btn-primary btn-lg">Shop Now</a>
+                <!-- Removed Create Account button -->
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="grid grid-3">
+            <div class="card text-center">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🚚</div>
+                <h3>Free Shipping</h3>
+                <p>Free shipping on all orders over $50. Fast and reliable delivery to your doorstep.</p>
+            </div>
+            
+            <div class="card text-center">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🔒</div>
+                <h3>Secure Payments</h3>
+                <p>Your payment information is protected with industry-leading security measures.</p>
+            </div>
+            
+            <div class="card text-center">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">↩️</div>
+                <h3>Easy Returns</h3>
+                <p>30-day return policy. Not satisfied? Return it hassle-free for a full refund.</p>
+            </div>
+        </section>
+
+        <!-- Featured Products -->
+        <section style="margin-top: 4rem;">
+            <h2 class="text-center mb-4">Featured Products</h2>
+            <div class="product-grid" id="featured-products">
+                <!-- Products will be loaded here -->
+            </div>
+        </section>
+
+        <!-- Newsletter Signup -->
+        <section class="card text-center" style="margin-top: 4rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none;">
+            <h3>Stay Updated</h3>
+            <p>Subscribe to our newsletter for the latest deals and product updates.</p>
+            <form class="form-group" style="max-width: 400px; margin: 0 auto;">
+                <div style="display: flex; gap: 0.5rem;">
+                    <input type="email" class="form-control" placeholder="Enter your email" required />
+                    <button type="submit" class="btn btn-primary">Subscribe</button>
+                </div>
+            </form>
+        </section>
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <p>&copy; 2024 ShopHub. All rights reserved. | 
+            <a href="#" style="color: var(--primary);">Privacy Policy</a> | 
+            <a href="#" style="color: var(--primary);">Terms of Service</a></p>
+        </div>
+    </div>
+</footer>
+
+<script src="script.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    const role = localStorage.getItem('role');
+
+    if (role === 'admin') {
+        document.getElementById('adminLink').style.display = 'inline-block';
+    }
+
+    const navActions = document.getElementById('nav-actions');
+    if (isLoggedIn) {
+        navActions.innerHTML = `<button class="btn btn-primary btn-sm" onclick="logout()">Logout</button>`;
+    }
+
+    // Load featured products
+    const featuredGrid = document.getElementById('featured-products');
+    if (featuredGrid && typeof mockProducts !== 'undefined') {
+        featuredGrid.innerHTML = mockProducts.slice(0, 3).map(product => `
+            <div class="product-card" data-id="${product.id}">
+                <div class="product-image">📦</div>
+                <div class="product-info">
+                    <div class="product-title">${product.name}</div>
+                    <div class="product-price">$${product.price}</div>
+                    <div class="product-description">${product.description}</div>
+                    <button class="btn btn-primary add-to-cart">Add to Cart</button>
+                </div>
+            </div>
+        `).join('');
+    }
+});
+
+function logout() {
+    localStorage.clear();
+    alert('Logged out successfully');
+    window.location.href = 'login.html';
+}
+</script>
+</body>
+</html>

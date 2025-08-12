@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Checkout - ShopHub</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<header class="header">
+    <div class="container">
+        <div class="header-content">
+            <a href="home.html" class="logo">🛍️ ShopHub</a>
+            <nav class="nav">
+                <ul class="nav-links">
+                    <li><a href="home.html">Home</a></li>
+                    <li><a href="product.html">Products</a></li>
+                    <li><a href="cart.html">Cart <span class="cart-count">0</span></a></li>
+                    <li><a href="profile.html">Profile</a></li>
+                    <li id="adminLink" style="display: none;"><a href="admin.html">Admin</a></li>
+                </ul>
+                <div class="nav-actions" id="nav-actions">
+                    <a href="login.html" class="btn btn-outline btn-sm">Login</a>
+                </div>
+            </nav>
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
+        </div>
+    </div>
+</header>
+
+<main class="main-content">
+    <div class="container">
+        <h1 class="mb-4">Checkout</h1>
+        <div class="grid grid-2">
+            <!-- Shipping Form -->
+            <div class="card">
+                <h3>Shipping Information</h3>
+                <form id="checkout-form" class="form-group">
+                    <input type="text" id="firstName" class="form-control" placeholder="First Name" required />
+                    <input type="text" id="lastName" class="form-control" placeholder="Last Name" required />
+                    <input type="email" id="email" class="form-control" placeholder="Email" required />
+                    <input type="text" class="form-control" placeholder="Address" required />
+                    <input type="text" class="form-control" placeholder="City" required />
+                    <input type="text" class="form-control" placeholder="State" required />
+                    <input type="text" class="form-control" placeholder="Zip Code" required />
+
+                    <h3 class="mt-4">Payment Method</h3>
+                    <label>
+                        <input type="radio" name="paymentMethod" value="credit" checked /> Credit Card
+                    </label>
+                    <label>
+                        <input type="radio" name="paymentMethod" value="cod" /> Cash on Delivery
+                    </label>
+
+                    <div id="credit-card-fields" class="mt-2">
+                        <input type="text" id="cardNumber" class="form-control" placeholder="Card Number" required />
+                        <input type="text" id="expiry" class="form-control" placeholder="MM/YY" required />
+                        <input type="text" id="cvv" class="form-control" placeholder="CVV" required />
+                    </div>
+
+                    <button type="submit" class="btn btn-primary mt-4">Place Order</button>
+                </form>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="card">
+                <h3>Order Summary</h3>
+                <div class="order-items">
+                    <!-- Populated via JS -->
+                </div>
+                <div class="mt-2">
+                    <p>Tax: <span id="tax-amount">$0.00</span></p>
+                    <p>Total: <span id="final-total">$0.00</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="container">
+        <p>&copy; 2024 ShopHub. All rights reserved.</p>
+    </div>
+</footer>
+
+<script src="script.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    const role = localStorage.getItem('role');
+
+    if (role === 'admin') {
+        document.getElementById('adminLink').style.display = 'inline-block';
+    }
+
+    const navActions = document.getElementById('nav-actions');
+    if (isLoggedIn) {
+        navActions.innerHTML = `<button class="btn btn-primary btn-sm" onclick="logout()">Logout</button>`;
+    }
+
+    function logout() {
+        localStorage.clear();
+        alert('Logged out successfully');
+        window.location.href = 'login.html';
+    }
+
+    // Prevent checkout if cart is empty
+    if (AppState.cart.length === 0) {
+        window.location.href = 'cart.html';
+        return;
+    }
+
+    // Populate order items
+    function populateOrderItems() {
+        const orderItems = document.querySelector('.order-items');
+        orderItems.innerHTML = AppState.cart.map(item => `
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid var(--border);">
+                <div>
+                    <div style="font-weight: 500;">${item.name}</div>
+                    <div style="font-size: 0.875rem; color: var(--text-secondary);">Qty: ${item.quantity}</div>
+                </div>
+                <div style="font-weight: 600;">$${(item.price * item.quantity).toFixed(2)}</div>
+            </div>
+        `).join('');
+        
+        const subtotal = AppState.getCartTotal();
+        const tax = subtotal * 0.08;
+        const total = subtotal + tax;
+        
+        document.getElementById('tax-amount').textContent = `$${tax.toFixed(2)}`;
+        document.getElementById('final-total').textContent = `$${total.toFixed(2)}`;
+    }
+
+    populateOrderItems();
+
+    // Payment method toggle
+    const paymentRadios = document.querySelectorAll('input[name="paymentMethod"]');
+    const creditCardFields = document.getElementById('credit-card-fields');
+    
+    paymentRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            creditCardFields.style.display = (this.value === 'credit') ? 'block' : 'none';
+            const ccInputs = creditCardFields.querySelectorAll('input');
+            ccInputs.forEach(input => input.required = (this.value === 'credit'));
+        });
+    });
+
+    // Card formatting
+    document.getElementById('cardNumber').addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+        e.target.value = value.match(/.{1,4}/g)?.join(' ') || value;
+    });
+
+    document.getElementById('expiry').addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length >= 3) {
+            value = value.substr(0, 2) + '/' + value.substr(2, 2);
+        }
+        e.target.value = value;
+    });
+
+    document.getElementById('cvv').addEventListener('input', function(e) {
+        e.target.value = e.target.value.replace(/[^0-9]/g, '');
+    });
+
+    // Auto-fill from stored profile
+    if (isLoggedIn) {
+        document.getElementById('firstName').value = localStorage.getItem('firstName') || '';
+        document.getElementById('lastName').value = localStorage.getItem('lastName') || '';
+        document.getElementById('email').value = localStorage.getItem('email') || '';
+    }
+
+    // Handle Place Order
+    document.getElementById('checkout-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const firstName = document.getElementById('firstName').value.trim();
+        const lastName = document.getElementById('lastName').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+
+        const subtotal = AppState.getCartTotal();
+        const tax = subtotal * 0.08;
+        const total = subtotal + tax;
+
+        const order = {
+            id: "SO-" + Date.now(),
+            name: firstName + " " + lastName,
+            email: email,
+            paymentMethod: paymentMethod,
+            items: AppState.cart,
+            total: total
+        };
+
+        localStorage.setItem('lastOrder', JSON.stringify(order));
+
+        // Clear cart
+        AppState.cart = [];
+        AppState.saveCart();
+
+        // Redirect to order successful page
+        window.location.href = "order_successful.html";
+    });
+});
+</script>
+</body>
+</html>

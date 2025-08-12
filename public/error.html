@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error - ShopHub</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="home.html" class="logo">🛍️ ShopHub</a>
+                
+                <nav class="nav">
+                    <ul class="nav-links">
+                        <li><a href="home.html">Home</a></li>
+                        <li><a href="product.html">Products</a></li>
+                        <li><a href="cart.html">Cart <span class="cart-count">0</span></a></li>
+                        <li><a href="profile.html">Profile</a></li>
+                        <li id="adminLink" style="display: none;"><a href="admin.html">Admin</a></li>
+                    </ul>
+                    
+                    <div class="nav-actions">
+                        <a href="login.html" id="loginBtn" class="btn btn-outline btn-sm">Login</a>
+                        <button id="logoutBtn" class="btn btn-outline btn-sm" style="display: none;">Logout</button>
+                    </div>
+                </nav>
+                
+                <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <div style="text-align: center; max-width: 600px; margin: 0 auto;">
+                <div style="font-size: 8rem; margin-bottom: 2rem;">🚫</div>
+                <h1 style="font-size: 3rem; margin-bottom: 1rem; color: var(--error);" id="error-title">
+                    404 - Page Not Found
+                </h1>
+                <p style="font-size: 1.25rem; color: var(--text-secondary); margin-bottom: 2rem;" id="error-message">
+                    Oops! The page you're looking for doesn't exist. It might have been moved, deleted, or you entered the wrong URL.
+                </p>
+
+                <div class="card" style="margin-bottom: 2rem; text-align: left;" id="error-details">
+                    <div class="card-header">
+                        <h3 class="card-title">Error Details</h3>
+                    </div>
+                    <div style="background-color: var(--surface); padding: 1rem; border-radius: var(--radius); font-family: monospace; font-size: 0.875rem;">
+                        <div><strong>Error Code:</strong> <span id="error-code">404</span></div>
+                        <div><strong>Timestamp:</strong> <span id="error-timestamp"></span></div>
+                        <div><strong>Request URL:</strong> <span id="error-url"></span></div>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 3rem;">
+                    <a href="home.html" class="btn btn-primary btn-lg">Go Home</a>
+                    <button class="btn btn-secondary btn-lg" onclick="goBack()">Go Back</button>
+                    <button class="btn btn-outline btn-lg" onclick="refreshPage()">Refresh Page</button>
+                </div>
+
+                <div class="card" style="background: var(--surface); border: none;">
+                    <h3 style="margin-bottom: 1rem;">Need Help?</h3>
+                    <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">
+                        If you believe this is an error, please contact our support team or try one of these options:
+                    </p>
+                    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                        <a href="mailto:support@shophub.com" class="btn btn-outline">Contact Support</a>
+                        <a href="product.html" class="btn btn-secondary">Browse Products</a>
+                        <a href="#" class="btn btn-secondary" onclick="reportError()">Report Issue</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>&copy; 2024 ShopHub. All rights reserved. | <a href="#" style="color: var(--primary);">Privacy Policy</a> | <a href="#" style="color: var(--primary);">Terms of Service</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        function parseErrorParams() {
+            const params = new URLSearchParams(window.location.search);
+            const errorType = params.get('type') || '404';
+            const message = params.get('message');
+
+            document.getElementById('error-timestamp').textContent = new Date().toLocaleString();
+            document.getElementById('error-url').textContent = window.location.href;
+            document.getElementById('error-code').textContent = errorType;
+
+            switch (errorType) {
+                case '403':
+                    document.getElementById('error-title').innerHTML = '403 - Access Forbidden';
+                    document.getElementById('error-message').textContent = 'Sorry, you don\'t have permission to access this resource.';
+                    document.querySelector('[style*="font-size: 8rem"]').textContent = '🔒';
+                    break;
+                case '500':
+                    document.getElementById('error-title').innerHTML = '500 - Server Error';
+                    document.getElementById('error-message').textContent = 'Something went wrong on our end. We\'re working to fix it!';
+                    document.querySelector('[style*="font-size: 8rem"]').textContent = '⚠️';
+                    break;
+                case '503':
+                    document.getElementById('error-title').innerHTML = '503 - Service Unavailable';
+                    document.getElementById('error-message').textContent = 'Our service is temporarily unavailable. Please try again later.';
+                    document.querySelector('[style*="font-size: 8rem"]').textContent = '🔧';
+                    break;
+            }
+
+            if (message) {
+                document.getElementById('error-message').textContent = decodeURIComponent(message);
+            }
+        }
+
+        function goBack() {
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                window.location.href = 'home.html';
+            }
+        }
+
+        function refreshPage() {
+            window.location.reload();
+        }
+
+        function reportError() {
+            const errorDetails = {
+                url: window.location.href,
+                timestamp: new Date().toISOString(),
+                userAgent: navigator.userAgent,
+                referrer: document.referrer
+            };
+            console.log('Error reported:', errorDetails);
+            if (typeof AppState !== 'undefined' && AppState.showNotification) {
+                AppState.showNotification('Error report sent. Thank you for your feedback!', 'success');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            parseErrorParams();
+
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const role = localStorage.getItem('role');
+
+            const loginBtn = document.getElementById('loginBtn');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const adminLink = document.getElementById('adminLink');
+
+            if (isLoggedIn) {
+                loginBtn.style.display = 'none';
+                logoutBtn.style.display = 'inline-block';
+            } else {
+                loginBtn.style.display = 'inline-block';
+                logoutBtn.style.display = 'none';
+            }
+
+            if (role === 'admin') {
+                adminLink.style.display = 'block';
+            }
+
+            logoutBtn.addEventListener('click', function() {
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('role');
+                window.location.href = 'home.html';
+            });
+
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('redirect') === 'true') {
+                let countdown = 30;
+                const countdownElement = document.createElement('div');
+                countdownElement.style.textAlign = 'center';
+                countdownElement.style.marginTop = '2rem';
+                countdownElement.style.color = 'var(--text-secondary)';
+                countdownElement.innerHTML = `Redirecting to home page in <span id="countdown">${countdown}</span> seconds...`;
+
+                document.querySelector('.main-content .container').appendChild(countdownElement);
+
+                const timer = setInterval(() => {
+                    countdown--;
+                    document.getElementById('countdown').textContent = countdown;
+                    if (countdown <= 0) {
+                        clearInterval(timer);
+                        window.location.href = 'home.html';
+                    }
+                }, 1000);
+            }
+        });
+    </script>
+</body>
+</html>

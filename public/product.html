@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products - ShopHub</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="header">
+    <div class="container">
+        <div class="header-content">
+            <a href="home.html" class="logo">🛍️ ShopHub</a>
+            <nav class="nav">
+                <ul class="nav-links">
+                    <li><a href="home.html">Home</a></li>
+                    <li><a href="product.html" class="active">Products</a></li>
+                    <li><a href="cart.html">Cart <span class="cart-count">0</span></a></li>
+                    <li><a href="profile.html">Profile</a></li>
+                    <li id="adminLink" style="display: none;"><a href="admin.html">Admin</a></li>
+                </ul>
+                <div class="nav-actions" id="nav-actions">
+                    <a href="login.html" class="btn btn-outline btn-sm">Login</a>
+                    <a href="register.html" class="btn btn-primary btn-sm">Sign Up</a>
+                </div>
+            </nav>
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
+        </div>
+    </div>
+</header>
+
+<main class="main-content">
+    <div class="container">
+        <!-- Header Section -->
+        <div style="text-align: center; margin-bottom: 3rem;">
+            <h1>Our Products</h1>
+            <p style="color: var(--text-secondary); font-size: 1.125rem;">
+                Discover our curated selection of premium products
+            </p>
+        </div>
+
+        <!-- Filters and Search -->
+        <div class="card" style="margin-bottom: 2rem;">
+            <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                <div class="form-group" style="margin-bottom: 0; flex: 1; min-width: 300px;">
+                    <input type="text" class="form-control" placeholder="Search products..." id="product-search" style="margin-bottom: 0;">
+                </div>
+                
+                <select class="form-control" id="category-filter" style="width: auto; margin-bottom: 0;">
+                    <option value="all">All Categories</option>
+                    <option value="electronics">Electronics</option>
+                    <option value="accessories">Accessories</option>
+                    <option value="gadgets">Gadgets</option>
+                </select>
+                
+                <select class="form-control" id="sort-filter" style="width: auto; margin-bottom: 0;">
+                    <option value="name">Sort by Name</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
+                    <option value="newest">Newest First</option>
+                </select>
+                
+                <button class="btn btn-secondary" onclick="clearFilters()">Clear</button>
+            </div>
+        </div>
+
+        <!-- Product Grid -->
+        <div class="product-grid"></div>
+
+        <!-- Load More Button -->
+        <div class="text-center" style="margin-top: 3rem;">
+            <button class="btn btn-outline btn-lg" id="load-more-btn">
+                Load More Products
+            </button>
+        </div>
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <p>&copy; 2024 ShopHub. All rights reserved. | 
+            <a href="#" style="color: var(--primary);">Privacy Policy</a> | 
+            <a href="#" style="color: var(--primary);">Terms of Service</a></p>
+        </div>
+    </div>
+</footer>
+
+<script src="script.js"></script>
+<script>
+    let filteredProducts = [...mockProducts];
+    let displayedProducts = 0;
+    const productsPerPage = 6;
+
+    function renderProducts() {
+        const productGrid = document.querySelector('.product-grid');
+        const loadMoreBtn = document.getElementById('load-more-btn');
+        
+        const productsToShow = filteredProducts.slice(0, displayedProducts + productsPerPage);
+        displayedProducts = productsToShow.length;
+        
+        productGrid.innerHTML = productsToShow.map(product => `
+            <div class="product-card" data-id="${product.id}">
+                <div class="product-image">📦</div>
+                <div class="product-info">
+                    <div class="product-title">${product.name}</div>
+                    <div class="product-price">$${product.price}</div>
+                    <div class="product-description">${product.description}</div>
+                    <button class="btn btn-primary add-to-cart">Add to Cart</button>
+                </div>
+            </div>
+        `).join('');
+        
+        loadMoreBtn.style.display = (displayedProducts >= filteredProducts.length) ? 'none' : 'inline-flex';
+    }
+
+    function filterProducts() {
+        const search = document.getElementById('product-search').value.toLowerCase();
+        const category = document.getElementById('category-filter').value;
+        const sort = document.getElementById('sort-filter').value;
+        
+        filteredProducts = mockProducts.filter(product => 
+            product.name.toLowerCase().includes(search) ||
+            product.description.toLowerCase().includes(search)
+        );
+        
+        if (category !== 'all') {
+            filteredProducts = filteredProducts.filter(product => {
+                const productName = product.name.toLowerCase();
+                if (category === 'electronics') return productName.includes('headphones') || productName.includes('watch') || productName.includes('hub');
+                if (category === 'accessories') return productName.includes('stand') || productName.includes('mouse') || productName.includes('keyboard');
+                if (category === 'gadgets') return productName.includes('watch') || productName.includes('hub');
+                return true;
+            });
+        }
+        
+        switch (sort) {
+            case 'price-low':
+                filteredProducts.sort((a, b) => a.price - b.price);
+                break;
+            case 'price-high':
+                filteredProducts.sort((a, b) => b.price - a.price);
+                break;
+            case 'name':
+                filteredProducts.sort((a, b) => a.name.localeCompare(b.name));
+                break;
+            case 'newest':
+                filteredProducts.sort((a, b) => b.id - a.id);
+                break;
+        }
+        
+        displayedProducts = 0;
+        renderProducts();
+    }
+
+    function clearFilters() {
+        document.getElementById('product-search').value = '';
+        document.getElementById('category-filter').value = 'all';
+        document.getElementById('sort-filter').value = 'name';
+        filterProducts();
+    }
+
+    function logout() {
+        localStorage.clear();
+        alert('Logged out successfully');
+        window.location.href = 'login.html';
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+        const role = localStorage.getItem('role');
+
+        // Optional: redirect if not logged in
+        // if (!isLoggedIn) {
+        //     alert('Please log in to view products');
+        //     window.location.href = 'login.html';
+        //     return;
+        // }
+
+        if (role === 'admin') {
+            document.getElementById('adminLink').style.display = 'inline-block';
+        }
+
+        const navActions = document.getElementById('nav-actions');
+        if (isLoggedIn) {
+            navActions.innerHTML = `<button class="btn btn-primary btn-sm" onclick="logout()">Logout</button>`;
+        }
+
+        document.getElementById('product-search').addEventListener('input', filterProducts);
+        document.getElementById('category-filter').addEventListener('change', filterProducts);
+        document.getElementById('sort-filter').addEventListener('change', filterProducts);
+        document.getElementById('load-more-btn').addEventListener('click', renderProducts);
+
+        filterProducts();
+    });
+</script>
+</body>
+</html>

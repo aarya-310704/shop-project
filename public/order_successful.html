@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Successful - ShopHub</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="home.html" class="logo">🛍️ ShopHub</a>
+                
+                <nav class="nav">
+                    <ul class="nav-links">
+                        <li><a href="home.html">Home</a></li>
+                        <li><a href="product.html">Products</a></li>
+                        <li><a href="cart.html">Cart <span class="cart-count">0</span></a></li>
+                        <li><a href="profile.html">Profile</a></li>
+                    </ul>
+                    
+                    <div class="nav-actions">
+                        <a href="login.html" class="btn btn-outline btn-sm">Login</a>
+                        <a href="register.html" class="btn btn-primary btn-sm">Sign Up</a>
+                    </div>
+                </nav>
+                
+                <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <div style="max-width: 800px; margin: 0 auto; text-align: center;">
+                <div style="font-size: 5rem; margin-bottom: 2rem; animation: bounce 2s infinite;" class="fade-in">
+                    ✅
+                </div>
+                
+                <h1 style="color: var(--success); margin-bottom: 1rem;" class="fade-in">Order Successful!</h1>
+                <p style="font-size: 1.25rem; color: var(--text-secondary); margin-bottom: 2rem;" class="fade-in">
+                    Thank you for your purchase! Your order has been confirmed and is being processed.
+                </p>
+
+                <div class="card fade-in" style="text-align: left; margin-bottom: 2rem;">
+                    <div class="card-header">
+                        <h3 class="card-title">Order Details</h3>
+                        <span style="color: var(--text-secondary);" id="order-date"></span>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                        <div>
+                            <div style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.25rem;">Order Number</div>
+                            <div style="font-size: 1.125rem; font-weight: 600; font-family: monospace;" id="order-number">#SO-2024-0001</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.25rem;">Total Amount</div>
+                            <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary);" id="order-total">$0.00</div>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 2rem;">
+                        <h4 style="margin-bottom: 1rem;">Items Ordered</h4>
+                        <div id="order-items"></div>
+                    </div>
+
+                    <div class="grid grid-2" style="gap: 2rem;">
+                        <div>
+                            <h4 style="margin-bottom: 1rem;">Shipping Address</h4>
+                            <div id="shipping-address" style="color: var(--text-secondary); line-height: 1.6;"></div>
+                        </div>
+                        <div>
+                            <h4 style="margin-bottom: 1rem;">Payment Method</h4>
+                            <div id="payment-method" style="color: var(--text-secondary);"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card fade-in" style="text-align: left; margin-bottom: 2rem; background: var(--surface); border: none;">
+                    <h3 style="margin-bottom: 1.5rem;">What's Next?</h3>
+                    
+                    <div class="grid grid-2" style="gap: 2rem;">
+                        <div>
+                            <div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+                                <div style="font-size: 1.5rem;">📧</div>
+                                <div>
+                                    <h4>Confirmation Email</h4>
+                                    <p style="color: var(--text-secondary); font-size: 0.875rem;">
+                                        You'll receive a confirmation email with your order details within a few minutes.
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div style="display: flex; align-items: flex-start; gap: 1rem;">
+                                <div style="font-size: 1.5rem;">🚚</div>
+                                <div>
+                                    <h4>Processing & Shipping</h4>
+                                    <p style="color: var(--text-secondary); font-size: 0.875rem;">
+                                        Your order will be processed within 1-2 business days and shipped via standard delivery.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
+                                <div style="font-size: 1.5rem;">📱</div>
+                                <div>
+                                    <h4>Order Tracking</h4>
+                                    <p style="color: var(--text-secondary); font-size: 0.875rem;">
+                                        You can track your order status in your account or with the tracking number provided.
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div style="display: flex; align-items: flex-start; gap: 1rem;">
+                                <div style="font-size: 1.5rem;">📞</div>
+                                <div>
+                                    <h4>Customer Support</h4>
+                                    <p style="color: var(--text-secondary); font-size: 0.875rem;">
+                                        Need help? Contact our support team at support@shophub.com or (555) 123-4567.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 2rem;" class="fade-in">
+                    <a href="profile.html" class="btn btn-primary btn-lg">View Order History</a>
+                    <a href="product.html" class="btn btn-secondary btn-lg">Continue Shopping</a>
+                    <button class="btn btn-outline btn-lg" onclick="printOrder()">Print Receipt</button>
+                </div>
+
+                <div class="card fade-in" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none;">
+                    <h3>Share Your Purchase</h3>
+                    <p style="margin-bottom: 1.5rem; opacity: 0.9;">
+                        Love your new products? Share them with friends and get 10% off your next order!
+                    </p>
+                    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                        <button class="btn btn-secondary" onclick="shareOrder('facebook')">Facebook</button>
+                        <button class="btn btn-secondary" onclick="shareOrder('twitter')">Twitter</button>
+                        <button class="btn btn-secondary" onclick="copyOrderLink()">Copy Link</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>&copy; 2024 ShopHub. All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Redirect if no order data from checkout
+            const lastOrder = localStorage.getItem('lastOrder');
+            if (!lastOrder) {
+                window.location.href = 'checkout.html';
+                return;
+            }
+
+            const orderNumber = '#SO-2024-' + Math.random().toString().substr(2, 6);
+            const orderDate = new Date().toLocaleString('en-US', { 
+                year: 'numeric', month: 'long', day: 'numeric',
+                hour: '2-digit', minute: '2-digit'
+            });
+
+            document.getElementById('order-number').textContent = orderNumber;
+            document.getElementById('order-date').textContent = orderDate;
+
+            let orderData = [];
+            let orderTotal = 0;
+
+            try {
+                const parsed = JSON.parse(lastOrder);
+                orderData = parsed.items || [];
+                orderTotal = parsed.total || 0;
+            } catch (e) {
+                console.error('Error parsing order data:', e);
+            }
+            
+            const orderItemsContainer = document.getElementById('order-items');
+            orderItemsContainer.innerHTML = orderData.map(item => `
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid var(--border);">
+                    <div>
+                        <div style="font-weight: 500;">${item.name}</div>
+                        <div style="font-size: 0.875rem; color: var(--text-secondary);">Quantity: ${item.quantity}</div>
+                    </div>
+                    <div style="font-weight: 600;">$${(item.price * item.quantity).toFixed(2)}</div>
+                </div>
+            `).join('');
+
+            document.getElementById('order-total').textContent = `$${orderTotal.toFixed(2)}`;
+
+            document.getElementById('shipping-address').innerHTML = `
+                John Doe<br>
+                123 Main Street, Apt 4B<br>
+                New York, NY 10001<br>
+                United States
+            `;
+
+            document.getElementById('payment-method').innerHTML = `
+                Credit Card ending in ****1234<br>
+                <span style="font-size: 0.875rem;">Charged: $${orderTotal.toFixed(2)}</span>
+            `;
+            
+            // Clear cart after order
+            AppState.cart = [];
+            AppState.saveCart();
+            AppState.updateCartUI();
+            setTimeout(() => {
+                localStorage.removeItem('lastOrder');
+            }, 1000);
+        });
+        
+        function printOrder() {
+            window.print();
+        }
+        
+        function shareOrder(platform) {
+            const orderNumber = document.getElementById('order-number').textContent;
+            const text = `Just placed an order on ShopHub! Order ${orderNumber}`;
+            const url = window.location.origin;
+            
+            switch (platform) {
+                case 'facebook':
+                    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${encodeURIComponent(text)}`);
+                    break;
+                case 'twitter':
+                    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`);
+                    break;
+            }
+        }
+        
+        function copyOrderLink() {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                AppState.showNotification('Order link copied to clipboard!', 'success');
+            });
+        }
+        
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes bounce {
+                0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+                40% { transform: translateY(-20px); }
+                60% { transform: translateY(-10px); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+# Robots.txt for ShopHub - Honeypot Configuration
+
+User-agent: *
+Disallow: /admin/
+Disallow: /api/
+Disallow: /private/
+Disallow: /secure/
+Disallow: /internal/
+Disallow: /.env
+Disallow: /config/
+Disallow: /backup/
+Disallow: /logs/
+Disallow: /database/
+Disallow: /temp/
+Disallow: /hidden/
+
+# Honeypot traps - these paths don't actually exist
+# but will log any bot that attempts to access them
+Disallow: /wp-admin/
+Disallow: /wp-content/
+Disallow: /administrator/
+Disallow: /phpmyadmin/
+Disallow: /mysql/
+Disallow: /.git/
+Disallow: /node_modules/
+Disallow: /vendor/
+
+# Allow public pages
+Allow: /
+Allow: /home.html
+Allow: /product.html
+Allow: /login.html
+Allow: /register.html
+Allow: /cart.html
+Allow: /checkout.html
+Allow: /profile.html
+
+# Crawl delay for legitimate bots
+Crawl-delay: 1
+
+# Sitemap location
+Sitemap: https://shophub.com/sitemap.xml

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - ShopHub</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Navbar hidden on login page -->
+<header class="header" id="navbar" style="display: none;">
+    <div class="container">
+        <div class="header-content">
+            <a href="home.html" class="logo">🛍️ ShopHub</a>
+            <nav class="nav">
+                <ul class="nav-links">
+                    <li><a href="home.html">Home</a></li>
+                    <li><a href="product.html">Products</a></li>
+                    <li><a href="cart.html">Cart <span class="cart-count">0</span></a></li>
+                    <li><a href="profile.html">Profile</a></li>
+                    <li><a href="admin.html">Admin</a></li>
+                </ul>
+                <div class="nav-actions" id="nav-actions">
+                    <a href="login.html" class="btn btn-outline btn-sm active">Login</a>
+                    <a href="register.html" class="btn btn-primary btn-sm">Sign Up</a>
+                </div>
+            </nav>
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
+        </div>
+    </div>
+</header>
+
+<main class="main-content">
+    <div class="container">
+        <div style="max-width: 400px; margin: 0 auto;">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h2 class="card-title">Welcome Back</h2>
+                    <p class="card-description">Sign in to your ShopHub account</p>
+                </div>
+
+                <form id="loginForm" novalidate>
+                    <div class="form-group">
+                        <label for="role" class="form-label">Login as</label>
+                        <select id="role" name="role" class="form-control" required>
+                            <option value="user">User</option>
+                            <option value="admin">Administrator</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email Address</label>
+                        <input type="email" id="email" name="email" class="form-control" placeholder="Enter your email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" id="password" name="password" class="form-control" placeholder="Enter your password" required>
+                    </div>
+
+                    <div class="form-group" style="display: flex; justify-content: space-between; align-items: center;">
+                        <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem;">
+                            <input type="checkbox" name="remember"> Remember me
+                        </label>
+                        <a href="reset_password.html" style="color: var(--primary); text-decoration: none; font-size: 0.875rem;">Forgot password?</a>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg">Sign In</button>
+
+                    <div class="text-center mt-3">
+                        <p style="color: var(--text-secondary); font-size: 0.875rem;">
+                            Don't have an account? 
+                            <a href="register.html" style="color: var(--primary); text-decoration: none; font-weight: 500;">Create one here</a>
+                        </p>
+                    </div>
+                </form>
+
+                <div class="alert alert-success" style="margin-top: 2rem;">
+                    <strong>Admin Demo Credentials:</strong><br>
+                    Email: admin@shophub.com<br>
+                    Password: Admin123!
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <p>&copy; 2024 ShopHub. All rights reserved. | 
+                <a href="#" style="color: var(--primary);">Privacy Policy</a> | 
+                <a href="#" style="color: var(--primary);">Terms of Service</a>
+            </p>
+        </div>
+    </div>
+</footer>
+
+<script>
+document.getElementById("loginForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const role = document.getElementById("role").value;
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+
+    if (role === "admin") {
+        if (email === "admin@shophub.com" && password === "Admin123!") {
+            localStorage.setItem("role", "admin");
+            localStorage.setItem("isLoggedIn", "true");
+            localStorage.setItem("userData", JSON.stringify({
+                firstName: "Admin",
+                lastName: "User",
+                email: email
+            }));
+            alert("Admin login successful!");
+            window.location.href = "admin.html";
+        } else {
+            alert("Invalid admin credentials!");
+        }
+    } else {
+        localStorage.setItem("role", "user");
+        localStorage.setItem("isLoggedIn", "true");
+        localStorage.setItem("userData", JSON.stringify({
+            firstName: "John",
+            lastName: "Doe",
+            email: email
+        }));
+        alert("User login successful!");
+        window.location.href = "home.html";
+    }
+});
+</script>
+
+</body>
+</html>

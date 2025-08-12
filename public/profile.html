@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - ShopHub</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="header">
+    <div class="container">
+        <div class="header-content">
+            <a href="home.html" class="logo">🛍️ ShopHub</a>
+            <nav class="nav">
+                <ul class="nav-links">
+                    <li><a href="home.html">Home</a></li>
+                    <li><a href="product.html">Products</a></li>
+                    <li><a href="cart.html">Cart <span class="cart-count"></span></a></li>
+                    <li><a href="profile.html" class="active">Profile</a></li>
+                    <li id="adminLink" style="display: none;"><a href="admin.html">Admin</a></li>
+                </ul>
+                <div class="nav-actions" id="nav-actions">
+                    <!-- Will be replaced with Logout if logged in -->
+                    <a href="login.html" class="btn btn-outline btn-sm">Login</a>
+                    <a href="register.html" class="btn btn-primary btn-sm">Sign Up</a>
+                </div>
+            </nav>
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
+        </div>
+    </div>
+</header>
+
+<main class="main-content">
+    <div class="container">
+        <h1 class="text-center mb-4">My Profile</h1>
+
+        <div class="grid grid-3" style="gap: 2rem;">
+            <!-- Profile Information -->
+            <div style="grid-column: 1 / 3;">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Personal Information</h3>
+                        <button class="btn btn-outline btn-sm" onclick="toggleEdit()">Edit</button>
+                    </div>
+
+                    <form id="profile-form">
+                        <div class="grid grid-2">
+                            <div class="form-group">
+                                <label for="firstName" class="form-label">First Name</label>
+                                <input type="text" id="firstName" name="firstName" class="form-control" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="lastName" class="form-label">Last Name</label>
+                                <input type="text" id="lastName" name="lastName" class="form-control" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="email" class="form-label">Email Address</label>
+                            <input type="email" id="email" name="email" class="form-control" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone" class="form-label">Phone Number</label>
+                            <input type="tel" id="phone" name="phone" class="form-control" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="address" class="form-label">Address</label>
+                            <textarea id="address" name="address" class="form-control" rows="3" readonly style="resize: vertical;"></textarea>
+                        </div>
+                        <div class="form-group" id="edit-actions" style="display: none;">
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                            <button type="button" class="btn btn-secondary" onclick="cancelEdit()">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Account Settings</h3>
+                    </div>
+                    <div class="form-group">
+                        <a href="reset_password.html" class="btn btn-outline" style="width: 100%; margin-bottom: 0.5rem;">
+                            Change Password
+                        </a>
+                        <button class="btn btn-outline text-error" style="width: 100%; border-color: var(--error); color: var(--error);">Delete Account</button>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top: 1rem;">
+                    <button class="btn btn-primary" style="width: 100%;" onclick="logout()">Sign Out</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <p>&copy; 2024 ShopHub. All rights reserved. | <a href="#" style="color: var(--primary);">Privacy Policy</a> | <a href="#" style="color: var(--primary);">Terms of Service</a></p>
+        </div>
+    </div>
+</footer>
+
+<script>
+let isEditing = false;
+let originalValues = {};
+
+function toggleEdit() {
+    const form = document.getElementById('profile-form');
+    const inputs = form.querySelectorAll('input, textarea');
+    const editActions = document.getElementById('edit-actions');
+    
+    if (!isEditing) {
+        originalValues = {};
+        inputs.forEach(input => {
+            originalValues[input.name] = input.value;
+            input.removeAttribute('readonly');
+        });
+        editActions.style.display = 'block';
+        isEditing = true;
+        document.querySelector('[onclick="toggleEdit()"]').textContent = 'Cancel';
+    } else {
+        cancelEdit();
+    }
+}
+
+function cancelEdit() {
+    const form = document.getElementById('profile-form');
+    const inputs = form.querySelectorAll('input, textarea');
+    const editActions = document.getElementById('edit-actions');
+    
+    inputs.forEach(input => {
+        input.value = originalValues[input.name];
+        input.setAttribute('readonly', '');
+    });
+    editActions.style.display = 'none';
+    isEditing = false;
+    document.querySelector('[onclick="toggleEdit()"]').textContent = 'Edit';
+}
+
+document.getElementById('profile-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const updatedData = {
+        firstName: document.getElementById('firstName').value.trim(),
+        lastName: document.getElementById('lastName').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        phone: document.getElementById('phone').value.trim(),
+        address: document.getElementById('address').value.trim()
+    };
+    localStorage.setItem('userData', JSON.stringify(updatedData));
+    alert('Profile updated successfully!');
+    cancelEdit();
+});
+
+function logout() {
+    if (confirm('Are you sure you want to sign out?')) {
+        localStorage.clear();
+        alert('Logged out successfully');
+        window.location.href = 'login.html';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    const role = localStorage.getItem('role');
+    const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+
+    if (!isLoggedIn) {
+        alert('Please log in to view your profile');
+        window.location.href = 'login.html';
+        return;
+    }
+
+    // Populate profile fields with ACTUAL saved data
+    document.getElementById('firstName').value = userData.firstName || '';
+    document.getElementById('lastName').value = userData.lastName || '';
+    document.getElementById('email').value = userData.email || '';
+    document.getElementById('phone').value = userData.phone || '';
+    document.getElementById('address').value = userData.address || '';
+
+    // Show admin link only if admin
+    if (role === 'admin') {
+        document.getElementById('adminLink').style.display = 'inline-block';
+    }
+
+    // Update navbar: remove login/signup, add logout
+    const navActions = document.getElementById('nav-actions');
+    navActions.innerHTML = `<button class="btn btn-primary btn-sm" onclick="logout()">Logout</button>`;
+});
+</script>
+</body>
+</html>

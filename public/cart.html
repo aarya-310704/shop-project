@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart - ShopHub</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="header">
+    <div class="container">
+        <div class="header-content">
+            <a href="home.html" class="logo">🛍️ ShopHub</a>
+            <nav class="nav">
+                <ul class="nav-links">
+                    <li><a href="home.html">Home</a></li>
+                    <li><a href="product.html">Products</a></li>
+                    <li><a href="cart.html" class="active">Cart <span class="cart-count">0</span></a></li>
+                    <li><a href="profile.html">Profile</a></li>
+                    <li id="adminLink" style="display: none;"><a href="admin.html">Admin</a></li>
+                </ul>
+                <div class="nav-actions" id="nav-actions">
+                    <a href="login.html" class="btn btn-outline btn-sm">Login</a>
+                    <a href="register.html" class="btn btn-primary btn-sm">Sign Up</a>
+                </div>
+            </nav>
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
+        </div>
+    </div>
+</header>
+
+<main class="main-content">
+    <div class="container">
+        <h1 class="text-center mb-4">Shopping Cart</h1>
+
+        <div class="grid grid-3" style="gap: 2rem;">
+            <!-- Cart Items -->
+            <div style="grid-column: 1 / 3;">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Your Items</h3>
+                    </div>
+                    <div class="cart-items">
+                        <!-- Cart items will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Summary -->
+            <div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Order Summary</h3>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span>Subtotal:</span>
+                            <span class="cart-total">$0.00</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span>Shipping:</span>
+                            <span class="text-success">Free</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span>Tax:</span>
+                            <span>$0.00</span>
+                        </div>
+                        <hr style="margin: 1rem 0;">
+                        <div style="display: flex; justify-content: space-between; font-size: 1.125rem; font-weight: 600;">
+                            <span>Total:</span>
+                            <span class="cart-total">$0.00</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Promo code" style="margin-bottom: 0.5rem;">
+                        <button class="btn btn-secondary btn-sm" style="width: 100%;">Apply Code</button>
+                    </div>
+
+                    <div class="form-group">
+                        <a href="checkout.html" class="btn btn-primary btn-lg" id="checkout-btn">Proceed to Checkout</a>
+                        <a href="product.html" class="btn btn-outline" style="margin-top: 0.5rem;">Continue Shopping</a>
+                    </div>
+                </div>
+
+                <!-- Security Badge -->
+                <div class="card text-center" style="margin-top: 1rem; background: var(--surface);">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔒</div>
+                    <h4>Secure Checkout</h4>
+                    <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0;">
+                        Your payment information is encrypted and secure
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recently Viewed -->
+        <section style="margin-top: 4rem;">
+            <h2 class="mb-3">You Might Also Like</h2>
+            <div class="product-grid" id="recommended-products">
+                <!-- Recommended products will be loaded here -->
+            </div>
+        </section>
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <p>&copy; 2024 ShopHub. All rights reserved. | 
+            <a href="#" style="color: var(--primary);">Privacy Policy</a> | 
+            <a href="#" style="color: var(--primary);">Terms of Service</a></p>
+        </div>
+    </div>
+</footer>
+
+<script src="script.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    const role = localStorage.getItem('role');
+
+    // Optional redirect if cart is locked for logged-in users only
+    // if (!isLoggedIn) {
+    //     alert('Please log in to view your cart');
+    //     window.location.href = 'login.html';
+    //     return;
+    // }
+
+    if (role === 'admin') {
+        document.getElementById('adminLink').style.display = 'inline-block';
+    }
+
+    const navActions = document.getElementById('nav-actions');
+    if (isLoggedIn) {
+        navActions.innerHTML = `<button class="btn btn-primary btn-sm" onclick="logout()">Logout</button>`;
+    }
+
+    function logout() {
+        localStorage.clear();
+        alert('Logged out successfully');
+        window.location.href = 'login.html';
+    }
+
+    // Load recommended products
+    const recommendedGrid = document.getElementById('recommended-products');
+    if (recommendedGrid && typeof mockProducts !== 'undefined') {
+        recommendedGrid.innerHTML = mockProducts.slice(3, 6).map(product => `
+            <div class="product-card" data-id="${product.id}">
+                <div class="product-image">📦</div>
+                <div class="product-info">
+                    <div class="product-title">${product.name}</div>
+                    <div class="product-price">$${product.price}</div>
+                    <div class="product-description">${product.description}</div>
+                    <button class="btn btn-primary add-to-cart">Add to Cart</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // Update checkout button state
+    function updateCheckoutButton() {
+        const checkoutBtn = document.getElementById('checkout-btn');
+        if (AppState.cart.length === 0) {
+            checkoutBtn.style.pointerEvents = 'none';
+            checkoutBtn.style.opacity = '0.5';
+            checkoutBtn.textContent = 'Cart is Empty';
+        } else {
+            checkoutBtn.style.pointerEvents = 'auto';
+            checkoutBtn.style.opacity = '1';
+            checkoutBtn.textContent = 'Proceed to Checkout';
+        }
+    }
+
+    const originalUpdateCartUI = AppState.updateCartUI;
+    AppState.updateCartUI = function() {
+        originalUpdateCartUI.call(this);
+        updateCheckoutButton();
+    };
+
+    updateCheckoutButton();
+});
+</script>
+</body>
+</html>
